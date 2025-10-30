@@ -10,11 +10,13 @@ rule bwa_map:
         fastq = get_bwa_map_input_fastqs
     output:
         "../results/mapped_reads/{sample}.bam"
+    params:
+        rg=r"@RG\tID:{sample}\tSM:{sample}"   
     log:
         "../results/logs/bwa_mem/{sample}.log"
     threads: 8
     shell:
-        "(bwa mem -t {threads} {input.ref} {input.fastq} | samtools view -Sb - > {output}) > {log}"
+        "(bwa mem -R '{params.rg}' -t {threads} {input.ref} {input.fastq} | samtools view -Sb - > {output}) > {log}"
 
 #BAM sorting with samtools
 rule samtools_sort:
@@ -34,6 +36,7 @@ rule samtools_index:
     shell:
         "samtools index {input}"
 
+'''
 #Basic vcf call with bcftools
 rule bcftools_call:
     input:
@@ -47,3 +50,18 @@ rule bcftools_call:
     shell:
         "bcftools mpileup -d 1000000 -f {input.ref} {input.bam} | "
         "bcftools call -mv > {output}"
+'''
+
+rule gatk_mutect2_tumor_only:
+    input:
+        ref="../data/references/hg38.fa",
+        bam="../results/sorted_reads/{sample}.bam",
+        bed="../data/bed/OCAPlus.fixed.bed" #changed chr1 to 1
+    output:
+        "../results/variant_calls/tumor_only_{sample}.raw.vcf.gz"
+    conda:
+        "envs/gatk.yaml"
+    shell:
+        "gatk Mutect2 -R {input.ref} \
+        -I {input.bam} \
+        -O {output}"
