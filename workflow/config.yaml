@@ -1,0 +1,4 @@
+samples:
+  ion: ../data/fastq_files/R_2025_02_06_10_11_10_user_GSS5PL-0156-415-2025-02-06_CHIP1.IonXpress_040.fastq
+  #R1 = "../data/fastq_files/{sample}_1.fastq"
+  #R2 = "../data/fastq_files/{sample}_2.fastq"
