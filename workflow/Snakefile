@@ -1,9 +1,38 @@
 rule bwa_map:
     input:
-        ref = "/data/references/hg38.fa",
-        R1 = "/data/fastq_files/{file}_1.fastq",
-        R2 = "/data/fastq_files/{file}_2.fastq",
+        ref="../data/references/hg38.fa",
+        R1="../data/fastq_files/{sample}_1.fastq",
+        R2="../data/fastq_files/{sample}_2.fastq",
     output:
-        "/results/mapped_reads/{file}.sam"
+        "../results/mapped_reads/{sample}.bam"
     shell:
-        "bwa mem {input.ref} {input.R1} {input.R2} > {output}"
+        "bwa mem {input.ref} {input.R1} {input.R2} | samtools view -Sb - > {output}"
+
+rule samtools_sort:
+    input:
+        "../results/mapped_reads/{sample}.bam"
+    output:
+        "../results/sorted_reads/{sample}.bam"
+    shell:
+        "samtools sort -T ../results/sorted_reads/{wildcards.sample} -O bam {input} > {output}"
+
+rule samtools_index:
+    input:
+        "../results/sorted_reads/{sample}.bam"
+    output:
+        "../results/sorted_reads/{sample}.bam.bai"
+    shell:
+        "samtools index {input}"
+
+
+
+rule bcftools_call:
+    input:
+        ref="../data/references/hg38.fa",
+        bam="../results/sorted_reads/{sample}.bam",
+        bai="../results/sorted_reads/{sample}.bam.bai"
+    output:
+        "../results/variant_calls/{sample}.vcf"
+    shell:
+        "bcftools mpileup -f {input.ref} {input.bam} | "
+        "bcftools call -mv > {output}"
