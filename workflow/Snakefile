@@ -1,0 +1,9 @@
+rule bwa_map:
+    input:
+        ref = "/data/references/hg38.fa",
+        R1 = "/data/fastq_files/{file}_1.fastq",
+        R2 = "/data/fastq_files/{file}_2.fastq",
+    output:
+        "/results/mapped_reads/{file}.sam"
+    shell:
+        "bwa mem {input.ref} {input.R1} {input.R2} > {output}"
