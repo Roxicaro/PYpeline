@@ -1,6 +1,23 @@
 configfile: "config.yaml"
 include: "functions.smk" #Python functions
 
+if config["seq_type"] == "SR":
+    rule all:    
+        input:
+            expand("../results/fastqc/{sample}_fastqc.html", sample=config["fastq"]), #FastQC and MultiQC reports
+            expand("../results/mapped_reads/{sample}.bam", sample=config["fastq"]), #BWA mapped BAM files
+            expand("../results/sorted_reads/{sample}.bam.bai", sample=config["fastq"]), #Sorted and indexed BAM files
+            expand("../results/variant_calls/{sample}.raw.vcf.gz", sample=config["fastq"]) #Variant call VCF files
+    
+elif config["seq_type"] == "PE":
+    samples = [config["pe_samples"]["fastq1"], config["pe_samples"]["fastq2"]]
+    rule all:        
+        input:
+            expand("../results/fastqc/{sample}_fastqc.html", sample=samples), #FastQC and MultiQC reports
+            expand("../results/mapped_reads/{sample}.bam", sample=samples), #BWA mapped BAM files
+            expand("../results/sorted_reads/{sample}.bam.bai", sample=samples), #Sorted and indexed BAM files
+            expand("../results/variant_calls/{sample}.raw.vcf.gz", sample=samples) #Variant call VCF files
+
 rule fastqc:
     input:
         get_bwa_map_input_fastqs
