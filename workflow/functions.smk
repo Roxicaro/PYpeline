@@ -6,7 +6,7 @@ def get_bwa_map_input_fastqs(wildcards):
     #Check if pair-end or single-read
     #Paired-end (Illumina)
     if config["seq_type"] == "PE":
-        return config["fastq1"], config["fastq2"]
+        return config["pe_samples"]["fastq1"], config["pe_samples"]["fastq2"]
     #Single-read (Ion Torrent)
     elif config["seq_type"] == "SR":
         return config["fastq"]

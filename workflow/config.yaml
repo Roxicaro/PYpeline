@@ -1,15 +1,19 @@
+#Analysis type: germline / somatic
+analysis: somatic
+
 #Analysis type: tumor-only (TO) / tumor-normal (TN) / normal-only (NO)
 type: TO
 
 #Sequencing type: pair-ended (PE) / single-read (SR)
-seq_type: SR
+seq_type: PE
 
 #If seq_type == PE // Pair-end testing:
-fastq1: "../data/fastq_files/sample_1.fastq"
-fastq2: "../data/fastq_files/sample_2.fastq"
+pe_samples:
+  fastq1: "../data/fastq_files/SRR35855706_1.fastq"
+  fastq2: "../data/fastq_files/SRR35855706_2.fastq"
 
 #If seq_type == SR // Single-read testing
-fastq: "../data/fastq_files/R_2025_02_06_10_11_10_user_GSS5PL-0156-415-2025-02-06_CHIP1.IonXpress_040.fastq"
+fastq: "../data/fastq_files/IonXpress_040.fastq"
 
 reference: hg38
 
