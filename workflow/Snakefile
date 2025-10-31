@@ -1,6 +1,20 @@
 configfile: "config.yaml"
 include: "functions.smk" #Python functions
 
+rule fast_qc:
+    input:
+        get_bwa_map_input_fastqs
+    output:
+        "../results/fastqc/{sample}_fastqc.html",
+        "../results/fastqc/{sample}_fastqc.zip"
+    threads: 4
+    conda:
+        "envs/fastqc.yaml"
+    log:
+        "../results/logs/fastqc/{sample}.log"
+    shell:
+        "fastqc -t {threads} -o ../results/fastqc/ {input}"
+
 rule bwa_map:
     input:
         ref="../data/references/hg38.fa",
@@ -9,9 +23,9 @@ rule bwa_map:
         "../results/mapped_reads/{sample}.bam"
     params:
         rg=r"@RG\tID:{sample}\tSM:{sample}"   
+    threads: 8
     log:
         "../results/logs/bwa_mem/{sample}.log"
-    threads: 8
     shell:
         "(bwa mem -R '{params.rg}' -t {threads} {input.ref} {input.fastq} | samtools view -Sb - > {output}) > {log}"
 
