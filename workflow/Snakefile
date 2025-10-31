@@ -1,6 +1,7 @@
 configfile: "config.yaml"
 include: "functions.smk" #Python functions
 
+#Run workflow for single-read (SR) data  
 if config["seq_type"] == "SR":
     rule all:    
         input:
@@ -8,7 +9,8 @@ if config["seq_type"] == "SR":
             expand("../results/mapped_reads/{sample}.bam", sample=config["fastq"]), #BWA mapped BAM files
             expand("../results/sorted_reads/{sample}.bam.bai", sample=config["fastq"]), #Sorted and indexed BAM files
             expand("../results/variant_calls/{sample}.raw.vcf.gz", sample=config["fastq"]) #Variant call VCF files
-    
+
+#Run workflow for pair-end (PE) data    
 elif config["seq_type"] == "PE":
     samples = [config["pe_samples"]["fastq1"], config["pe_samples"]["fastq2"]]
     rule all:        
@@ -20,7 +22,7 @@ elif config["seq_type"] == "PE":
 
 rule fastqc:
     input:
-        get_bwa_map_input_fastqs
+        get_bwa_map_input_fastqs #Function setup in "functions.smk"
     output:
         "../results/fastqc/{sample}_fastqc.html",
         "../results/fastqc/{sample}_fastqc.zip"
@@ -42,8 +44,9 @@ rule multiqc:
     log:
         "../results/logs/fastqc/multiqc.log"
     shell:
-        "(multiqc {input} -o ../results/fastqc/) > {log}"
+        "(multiqc {input} -o ../results/fastqc/) > {log} 2>&1"
 
+#Mapping with BWA MEM and conversion to BAM with samtools
 rule bwa_map:
     input:
         ref="../data/references/hg38.fa",
@@ -51,12 +54,12 @@ rule bwa_map:
     output:
         "../results/mapped_reads/{sample}.bam"
     params:
-        rg=r"@RG\tID:{sample}\tSM:{sample}"   
+        rg=r"@RG\tID:{sample}\tSM:{sample}" #Adding headers to BAM files   
     threads: 8
     conda:
         "envs/bwa.yaml"
     log:
-        "../results/logs/bwa_mem/{sample}.log"
+        "../results/logs/bwa_mem/{sample}_mapping.log"
     shell:
         "(bwa mem -R '{params.rg}' -t {threads} {input.ref} {input.fastq} | samtools view -Sb - > {output}) > {log} 2>&1"
 
@@ -67,9 +70,11 @@ rule samtools_sort:
     output:
         "../results/sorted_reads/{sample}.bam"
     conda:
-        "envs/bwa.yaml"    
+        "envs/bwa.yaml"  
+    log:
+        "../results/logs/samtools/{sample}_sorting.log"
     shell:
-        "samtools sort -T ../results/sorted_reads/{wildcards.sample} -O bam {input} > {output}"
+        "(samtools sort -T ../results/sorted_reads/{wildcards.sample} -O bam {input} > {output}) > {log} 2>&1"
 
 #BAM indexing with samtools
 rule samtools_index:
@@ -78,9 +83,11 @@ rule samtools_index:
     output:
         "../results/sorted_reads/{sample}.bam.bai"
     conda:
-        "envs/bwa.yaml"    
+        "envs/bwa.yaml" 
+    log:
+        "../results/logs/samtools/{sample}_indexing.log"
     shell:
-        "samtools index {input}"
+        "(samtools index {input}) > {log} 2>&1"
 
 #Basic vcf call with bcftools -- Only for WES/WGS data
 '''
@@ -101,6 +108,7 @@ rule bcftools_call:
             pass  # Skip this rule for single-read data
 '''
 
+#Variant calling with GATK Mutect2 - Tumor-only mode
 rule gatk_mutect2_tumor_only:
     input:
         ref="../data/references/hg38.fa",
@@ -111,7 +119,9 @@ rule gatk_mutect2_tumor_only:
         "../results/variant_calls/{sample}.raw.vcf.gz"
     conda:
         "envs/gatk.yaml"
+    log:
+        "../results/logs/gatk/{sample}_mutect2.log"
     shell:
-        "gatk Mutect2 -R {input.ref} \
+        "(gatk Mutect2 -R {input.ref} \
         -I {input.bam} \
-        -O {output}"
+        -O {output}) > {log} 2>&1"
