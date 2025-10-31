@@ -1,8 +1,5 @@
 configfile: "config.yaml"
-
-#Aligning FASTQ reads with BWA MEM and generate SAM/BAM output with samtools
-def get_bwa_map_input_fastqs(wildcards):
-    return config["samples"][wildcards.sample]
+include: "functions.smk" #Python functions
 
 rule bwa_map:
     input:
@@ -56,6 +53,7 @@ rule gatk_mutect2_tumor_only:
     input:
         ref="../data/references/hg38.fa",
         bam="../results/sorted_reads/{sample}.bam",
+        bai="../results/sorted_reads/{sample}.bam.bai",
         bed="../data/bed/OCAPlus.fixed.bed" #changed chr1 to 1
     output:
         "../results/variant_calls/tumor_only_{sample}.raw.vcf.gz"
