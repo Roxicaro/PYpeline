@@ -1,7 +1,7 @@
 configfile: "config.yaml"
 include: "functions.smk" #Python functions
 
-rule fast_qc:
+rule fastqc:
     input:
         get_bwa_map_input_fastqs
     output:
@@ -13,7 +13,19 @@ rule fast_qc:
     log:
         "../results/logs/fastqc/{sample}.log"
     shell:
-        "fastqc -t {threads} -o ../results/fastqc/ {input}"
+        "(fastqc -t {threads} -o ../results/fastqc/ {input}) > {log} 2>&1"
+
+rule multiqc:
+    input:
+        '../results/fastqc/' #Gathers all FastQC results
+    output:
+        "../results/fastqc/multiqc_report.html"
+    conda:
+        "envs/multiqc.yaml"
+    log:
+        "../results/logs/fastqc/multiqc.log"
+    shell:
+        "(multiqc {input} -o ../results/fastqc/) > {log}"
 
 rule bwa_map:
     input:
@@ -27,7 +39,7 @@ rule bwa_map:
     log:
         "../results/logs/bwa_mem/{sample}.log"
     shell:
-        "(bwa mem -R '{params.rg}' -t {threads} {input.ref} {input.fastq} | samtools view -Sb - > {output}) > {log}"
+        "(bwa mem -R '{params.rg}' -t {threads} {input.ref} {input.fastq} | samtools view -Sb - > {output}) > {log} 2>&1"
 
 #BAM sorting with samtools
 rule samtools_sort:
