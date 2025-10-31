@@ -14,3 +14,11 @@ data/
 - **FASTQ files:** Input sequencing reads.  
 - **BED files:** Target regions for variant calling.  
 - **References:** Reference genome files including any required index files for `bwa mem` and `Mutect2`.
+
+## Workflow DAG
+
+Pair-end sequencing FASTQs (Illumina):
+![Pipeline DAG](workflow/dag_pe.svg)
+
+Single-read sequencing FASTQs (Ion Torrent):
+![Pipeline DAG](workflow/dag_pe.svg)
