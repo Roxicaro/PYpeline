@@ -36,6 +36,8 @@ rule bwa_map:
     params:
         rg=r"@RG\tID:{sample}\tSM:{sample}"   
     threads: 8
+    conda:
+        "envs/bwa.yaml"
     log:
         "../results/logs/bwa_mem/{sample}.log"
     shell:
@@ -47,6 +49,8 @@ rule samtools_sort:
         "../results/mapped_reads/{sample}.bam"
     output:
         "../results/sorted_reads/{sample}.bam"
+    conda:
+        "envs/bwa.yaml"    
     shell:
         "samtools sort -T ../results/sorted_reads/{wildcards.sample} -O bam {input} > {output}"
 
@@ -56,10 +60,12 @@ rule samtools_index:
         "../results/sorted_reads/{sample}.bam"
     output:
         "../results/sorted_reads/{sample}.bam.bai"
+    conda:
+        "envs/bwa.yaml"    
     shell:
         "samtools index {input}"
 
-#Basic vcf call with bcftools -- Only for pair-ended data
+#Basic vcf call with bcftools -- Only for WES/WGS data
 '''
 rule bcftools_call:
     input:
