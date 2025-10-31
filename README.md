@@ -21,4 +21,4 @@ Pair-end sequencing FASTQs (Illumina):
 ![Pipeline DAG](workflow/dag_pe.svg)
 
 Single-read sequencing FASTQs (Ion Torrent):
-![Pipeline DAG](workflow/dag_pe.svg)
+![Pipeline DAG](workflow/dag_sr.svg)
