@@ -7,13 +7,24 @@ type: TO
 #Sequencing type: pair-ended (PE) / single-read (SR)
 seq_type: PE
 
+#Enalble trimming: true / false
+trim: "true"
+
+#Technology type: illumina / iontorrent
+tech: illumina
+
+#Adapter sequence: If not using common adapters, specify here
+adapter: ""
+
 #If seq_type == PE // Pair-end testing:
 pe_samples:
-  fastq1: "../data/fastq_files/SRR35855706_1.fastq"
-  fastq2: "../data/fastq_files/SRR35855706_2.fastq"
+  sample 1:
+    fastq1: "../data/fastq_files/SRR35855706_1.fastq"
+    fastq2: "../data/fastq_files/SRR35855706_2.fastq"
 
 #If seq_type == SR // Single-read testing
 fastq: "../data/fastq_files/IonXpress_040.fastq"
+trimmed_fastq: "../results/trimmed_fastq/IonXpress_040_trimmed.fq.gz"
 
 reference: hg38
 
