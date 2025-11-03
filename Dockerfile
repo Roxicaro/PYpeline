@@ -2,7 +2,7 @@ FROM mambaorg/micromamba:1.5.8
 
 WORKDIR /workspace
 
-COPY docker/base_env.yaml /tmp/environment.yaml
+COPY docker/base_env.yaml /tmp/base_env.yaml
 
 RUN micromamba create -y -n pypeline -f /tmp/base_env.yaml && \
     micromamba clean --all --yes

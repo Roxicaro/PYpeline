@@ -1,6 +1,8 @@
 name: pypeline_base
 channels:
   - conda-forge
+  - bioconda
+  - defaults
 dependencies:
   - python=3.12
   - snakemake-minimal
