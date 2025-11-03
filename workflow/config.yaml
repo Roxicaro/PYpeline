@@ -18,13 +18,13 @@ adapter: "ATCACCGACTGCCCATAGAGAGGCTGAGAC"
 
 #If seq_type == PE // Pair-end testing:
 pe_samples:
-  sample 1:
+  SRR35855706: #Sample name: fastq file path
     fastq1: "../data/fastq_files/SRR35855706_1.fastq"
     fastq2: "../data/fastq_files/SRR35855706_2.fastq"
 
 #If seq_type == SR // Single-read testing
-fastq: "../data/fastq_files/IonXpress_040.fastq"
-trimmed_fastq: "../results/trimmed_fastq/IonXpress_040_trimmed.fq.gz"
+sr_samples: #Sample name: fastq file path
+  IonXpress_040: "../data/fastq_files/IonXpress_040.fastq"
 
 reference: hg38
 

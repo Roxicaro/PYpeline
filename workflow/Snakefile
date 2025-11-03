@@ -3,19 +3,20 @@ include: "functions.smk" #Python functions
 
 #Run workflow for single-read (SR) data  
 if config["seq_type"] == "SR":
+    samples = list(config["sr_samples"].keys())
     rule all:    
         input:
-            expand("../results/fastqc/{sample}_fastqc.html", sample=config["fastq"]), #FastQC and MultiQC reports
-            expand("../results/mapped_reads/{sample}.bam", sample=config["fastq"]), #BWA mapped BAM files
-            expand("../results/sorted_reads/{sample}.bam.bai", sample=config["fastq"]), #Sorted and indexed BAM files
-            expand("../results/variant_calls/{sample}.raw.vcf.gz", sample=config["fastq"]) #Variant call VCF files
+            expand("../results/fastqc/{sample}_fastqc.html", sample=samples), #FastQC and MultiQC reports
+            expand("../results/mapped_reads/{sample}.bam", sample=samples), #BWA mapped BAM files
+            expand("../results/sorted_reads/{sample}.bam.bai", sample=samples), #Sorted and indexed BAM files
+            expand("../results/variant_calls/{sample}.raw.vcf.gz", sample=samples) #Variant call VCF files
 
 #Run workflow for pair-end (PE) data    
 elif config["seq_type"] == "PE":
     samples = list(config["pe_samples"].keys())
     rule all:        
         input:
-            expand("../results/fastqc/{sample}_fastqc.html", sample=samples), #FastQC and MultiQC reports
+            expand("../results/fastqc/{sample}_2_fastqc.html", sample=samples), #FastQC and MultiQC reports
             expand("../results/mapped_reads/{sample}.bam", sample=samples), #BWA mapped BAM files
             expand("../results/sorted_reads/{sample}.bam.bai", sample=samples), #Sorted and indexed BAM files
             expand("../results/variant_calls/{sample}.raw.vcf.gz", sample=samples) #Variant call VCF files
@@ -23,10 +24,11 @@ elif config["seq_type"] == "PE":
 #Quality check with FastQC before trimming
 rule fastqc:
     input:
-        get_fastqc_input_fastqs #Function setup in "functions.smk"
+        get_preprocessed_input_fastqs #Function setup in "functions.smk"
     output:
-        "../results/fastqc/{sample}_fastqc.html",
-        "../results/fastqc/{sample}_fastqc.zip"
+        #Using expand to create outputs for both reads in pair-end data
+        html = expand("../results/fastqc/{sample}_{read}_fastqc.html", sample="{sample}", read=["1", "2"]),
+        zip  = expand("../results/fastqc/{sample}_{read}_fastqc.zip",  sample="{sample}", read=["1", "2"])
     threads: 4
     conda:
         "envs/fastqc.yaml"
@@ -40,10 +42,10 @@ rule fastqc:
 if config["tech"] == "illumina":
     rule trim_galore:
         input:
-            get_trimming_input_fastqs #Function setup in "functions.smk"
+            get_preprocessed_input_fastqs #Function setup in "functions.smk"
         output:
-            r1 = "../results/trimmed_fastq/{sample}_val_1.fq.gz",
-            r2 = "../results/trimmed_fastq/{sample}_val_2.fq.gz"
+            r1 = "../results/trimmed_fastq/{sample}_1_val_1.fq.gz",
+            r2 = "../results/trimmed_fastq/{sample}_2_val_2.fq.gz"
         threads: 4
         conda:
             "envs/trim_galore.yaml"
@@ -56,7 +58,7 @@ elif config["tech"] == "iontorrent":
     adapter = config["adapter"]
     rule trim_galore:
         input:
-            get_trimming_input_fastqs #Function setup in "functions.smk"
+            get_preprocessed_input_fastqs #Function setup in "functions.smk"
         output:
             "../results/trimmed_fastq/{sample}_trimmed.fq.gz"
         threads: 4
@@ -65,7 +67,7 @@ elif config["tech"] == "iontorrent":
         log:
             "../results/logs/fastqc/{sample}_trimming.log"
         shell:
-            "(trim_galore -a/--adapter {adapter} --fastqc --gzip --output_dir ../results/trimmed_fastq/ {input}) > '{log}' 2>&1"
+            "(trim_galore --adapter {adapter} --fastqc --gzip --output_dir ../results/trimmed_fastq/ {input}) > '{log}' 2>&1"
 
 rule multiqc:
     input:
