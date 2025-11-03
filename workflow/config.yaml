@@ -14,7 +14,7 @@ trim: "true"
 tech: illumina
 
 #Adapter sequence: If not using common adapters, specify here
-adapter: ""
+adapter: "ATCACCGACTGCCCATAGAGAGGCTGAGAC"
 
 #If seq_type == PE // Pair-end testing:
 pe_samples:
