@@ -18,9 +18,29 @@ process FASTQC {
     """
 }
 
+process TRIM_GALORE {
+    tag "$sample_id"
+    publishDir "${params.outdir}/trimmed", mode: 'copy'
+
+    input:
+    tuple val(sample_id), path(reads)
+
+    output:
+    tuple val(sample_id), path("*.fq.gz")
+
+    script:
+    """
+    trim_galore --paired \
+        --cores ${task.cpus} \
+        --output_dir ./ \
+        ${reads.join(" ")}
+    """
+}
+
 workflow {
     Channel.fromFilePairs(params.reads)
         .set { raw_reads }
 
     FASTQC(raw_reads)
+    TRIM_GALORE(raw_reads)
 }
