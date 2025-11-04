@@ -57,8 +57,9 @@ process BWA_ALIGN {
 
     script:
     def idxbase = bwa_index[0].baseName // sets the index base name
+    def param = "@RG\\tID:${sample_id}\\tSM:${sample_id}" // read group parameter
     """
-    bwa mem -t ${task.cpus} ${idxbase} ${read1} ${read2} | samtools view -b - > "${sample_id}_unsorted.bam"
+    bwa mem -R '${param}' -t ${task.cpus} ${idxbase} ${read1} ${read2} | samtools view -b - > "${sample_id}_unsorted.bam"
     """
 }
 
@@ -98,13 +99,39 @@ process SAMTOOLS_INDEXING {
     """
 }
 
+process GATK_MUTECT2 {
+    tag "$sample_id"
+    publishDir "${params.outdir}/variant_calls", mode: 'copy'
+
+    conda "envs/gatk.yaml"
+
+    input:
+    tuple val(sample_id), path(sorted)
+    path(indexed)
+    path bwa_index
+    path(fasta)
+    path(dict)
+
+    output:
+    path "${sample_id}.raw.vcf.gz"
+
+    script:
+    """
+    gatk Mutect2 -R ${fasta} \
+    -I ${sorted} \
+    -O "${sample_id}.raw.vcf.gz"
+    """
+}
 workflow {
     raw_reads = Channel.fromFilePairs(params.reads)
-    bwa_index = file( 'data/references/hg38.fa.{,amb,ann,bwt,pac,sa}' )
+    bwa_index = file( 'data/references/hg38.fa.{,amb,ann,bwt,pac,sa,fai}' )
+    fasta = file('data/references/hg38.fa')
+    dict = file('data/references/hg38.dict')
 
     FASTQC(raw_reads)
     trimmed_reads = TRIM_GALORE(raw_reads)
     mapped = BWA_ALIGN(trimmed_reads, bwa_index)
     sorted = SAMTOOLS_SORTING(mapped)
-    SAMTOOLS_INDEXING(sorted)
+    indexed = SAMTOOLS_INDEXING(sorted)
+    GATK_MUTECT2 (sorted, indexed, bwa_index, fasta, dict)
 }
