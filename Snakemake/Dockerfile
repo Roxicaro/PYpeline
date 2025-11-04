@@ -1,6 +1,6 @@
 FROM mambaorg/micromamba:1.5.8
 
-WORKDIR /workspace
+WORKDIR /workflow
 
 COPY docker/base_env.yaml /tmp/base_env.yaml
 
