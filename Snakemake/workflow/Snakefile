@@ -30,8 +30,6 @@ rule fastqc:
         html = expand("../results/fastqc/{sample}_{read}_fastqc.html", sample="{sample}", read=["1", "2"]),
         zip  = expand("../results/fastqc/{sample}_{read}_fastqc.zip",  sample="{sample}", read=["1", "2"])
     threads: 4
-    conda:
-        "envs/fastqc.yaml"
     log:
         "../results/logs/fastqc/{sample}_fastqc.log"
     shell:
@@ -47,8 +45,6 @@ if config["tech"] == "illumina":
             r1 = "../results/trimmed_fastq/{sample}_1_val_1.fq.gz",
             r2 = "../results/trimmed_fastq/{sample}_2_val_2.fq.gz"
         threads: 4
-        conda:
-            "envs/trim_galore.yaml"
         log:
             "../results/logs/fastqc/{sample}_trimming.log"
         shell:
@@ -62,8 +58,6 @@ elif config["tech"] == "iontorrent":
         output:
             "../results/trimmed_fastq/{sample}_trimmed.fq.gz"
         threads: 4
-        conda:
-            "envs/trim_galore.yaml"
         log:
             "../results/logs/fastqc/{sample}_trimming.log"
         shell:
@@ -74,8 +68,6 @@ rule multiqc:
         '../results/fastqc/' #Gathers all FastQC results
     output:
         "../results/fastqc/multiqc_report.html"
-    conda:
-        "envs/multiqc.yaml"
     log:
         "../results/logs/fastqc/multiqc.log"
     shell:
@@ -91,8 +83,6 @@ rule bwa_map:
     params:
         rg=r"@RG\tID:{sample}\tSM:{sample}" #Adding headers to BAM files   
     threads: 8
-    conda:
-        "envs/bwa.yaml"
     log:
         "../results/logs/bwa_mem/{sample}_mapping.log"
     shell:
@@ -104,8 +94,6 @@ rule samtools_sort:
         "../results/mapped_reads/{sample}.bam"
     output:
         "../results/sorted_reads/{sample}.bam"
-    conda:
-        "envs/bwa.yaml"  
     log:
         "../results/logs/samtools/{sample}_sorting.log"
     shell:
@@ -117,8 +105,6 @@ rule samtools_index:
         "../results/sorted_reads/{sample}.bam"
     output:
         "../results/sorted_reads/{sample}.bam.bai"
-    conda:
-        "envs/bwa.yaml" 
     log:
         "../results/logs/samtools/{sample}_indexing.log"
     shell:
@@ -152,8 +138,6 @@ rule gatk_mutect2_tumor_only:
         bed="../data/bed/OCAPlus.fixed.bed"
     output:
         "../results/variant_calls/{sample}.raw.vcf.gz"
-    conda:
-        "envs/gatk.yaml"
     log:
         "../results/logs/gatk/{sample}_mutect2.log"
     shell:
