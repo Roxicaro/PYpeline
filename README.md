@@ -79,3 +79,6 @@ Pair-end sequencing FASTQs (Illumina):
 Single-read sequencing FASTQs (Ion Torrent):
 
 ![Pipeline DAG](Snakemake/workflow/dag_sr.svg)
+
+## Example Workflow DAG (Nextflow)
+![Pipeline DAG](Nextflow/dag.svg)
