@@ -36,15 +36,37 @@ process TRIM_GALORE {
     """
     trim_galore --paired \
         --cores ${task.cpus} \
+        --fastqc \
         --output_dir ./ \
         ${reads.join(" ")}
     """
 }
 
+process BWA_ALIGN {
+    tag "$sample_id"
+    publishDir "${params.outdir}/aligned_unsorted", mode: 'copy'
+
+    conda "envs/bwa.yaml"
+
+    input:
+    tuple val(sample_id), path(read1), path(read2)
+    path bwa_index
+
+    output:
+    path "${sample_id}.bam"
+
+    script:
+    def idxbase = bwa_index[0].baseName // sets the index base name
+    """
+    bwa mem -t ${task.cpus} ${idxbase} ${read1} ${read2} | samtools view -b - > "${sample_id}.bam"
+    """
+}
+
 workflow {
-    Channel.fromFilePairs(params.reads)
-        .set { raw_reads }
+    raw_reads = Channel.fromFilePairs(params.reads)
+    bwa_index = file( 'data/references/hg38.fa.{,amb,ann,bwt,pac,sa}' )
 
     FASTQC(raw_reads)
-    TRIM_GALORE(raw_reads)
+    trimmed_reads = TRIM_GALORE(raw_reads)
+    mapped = BWA_ALIGN(trimmed_reads, bwa_index)
 }
