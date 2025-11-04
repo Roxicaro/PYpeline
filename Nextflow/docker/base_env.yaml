@@ -1,0 +1,17 @@
+name: pypeline_base
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.12
+  - micromamba
+  - bwa
+  - samtools
+  - fastqc
+  - openjdk=11
+  - gatk4
+  - multiqc
+  - cutadapt
+  - trim-galore
+  - nextflow

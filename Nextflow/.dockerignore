@@ -1,0 +1,17 @@
+# Ignore datasets
+data/
+results/
+env/
+
+# Ignore conda/mamba environments
+.env/
+.venv/
+
+# Ignore Nextflow cache directories
+work/
+.nextflow*
+
+# Ignore temp or user-local files
+*.log
+*.tmp
+.DS_Store
