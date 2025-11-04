@@ -70,12 +70,12 @@ Install Snakemake via Conda:
 conda install -c conda-forge -c bioconda snakemake
 ```
 
-## Example Workflow DAG
+## Example Workflow DAG (Snakemake)
 
 Pair-end sequencing FASTQs (Illumina):
 
-![Pipeline DAG](workflow/dag_pe.svg)
+![Pipeline DAG](Snakemake/workflow/dag_pe.svg)
 
 Single-read sequencing FASTQs (Ion Torrent):
 
-![Pipeline DAG](workflow/dag_sr.svg)
+![Pipeline DAG](Snakemake/workflow/dag_sr.svg)
