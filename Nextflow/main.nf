@@ -53,12 +53,30 @@ process BWA_ALIGN {
     path bwa_index
 
     output:
-    path "${sample_id}.bam"
+    path "${sample_id}_unsorted.bam"
 
     script:
     def idxbase = bwa_index[0].baseName // sets the index base name
     """
-    bwa mem -t ${task.cpus} ${idxbase} ${read1} ${read2} | samtools view -b - > "${sample_id}.bam"
+    bwa mem -t ${task.cpus} ${idxbase} ${read1} ${read2} | samtools view -b - > "${sample_id}_unsorted.bam"
+    """
+}
+
+process SAMTOOLS_SORTING {
+    tag "$sample_id"
+    publishDir "${params.outdir}/bam", mode: 'copy'
+
+    conda "envs/bwa.yaml"
+
+    input:
+    path mapped
+
+    output:
+    path "${sample_id}.bam"
+
+    script:
+    """
+    samtools sort -o "${sample_id}.bam" ${mapped}
     """
 }
 
@@ -69,4 +87,5 @@ workflow {
     FASTQC(raw_reads)
     trimmed_reads = TRIM_GALORE(raw_reads)
     mapped = BWA_ALIGN(trimmed_reads, bwa_index)
+    sorted = SAMTOOLS_SORTING(mapped)
 }
