@@ -53,7 +53,7 @@ process BWA_ALIGN {
     path bwa_index
 
     output:
-    path "${sample_id}_unsorted.bam"
+    tuple val(sample_id), path("${sample_id}_unsorted.bam")
 
     script:
     def idxbase = bwa_index[0].baseName // sets the index base name
@@ -69,14 +69,32 @@ process SAMTOOLS_SORTING {
     conda "envs/bwa.yaml"
 
     input:
-    path mapped
+    tuple val(sample_id), path(mapped)
 
     output:
-    path "${sample_id}.bam"
+    tuple val(sample_id), path("${sample_id}.bam")
 
     script:
     """
     samtools sort -o "${sample_id}.bam" ${mapped}
+    """
+}
+
+process SAMTOOLS_INDEXING {
+    tag "$sample_id"
+    publishDir "${params.outdir}/bam", mode: 'copy'
+
+    conda "envs/bwa.yaml"
+
+    input:
+    tuple val(sample_id), path(sorted)
+
+    output:
+    path "${sample_id}.bam.bai"
+
+    script:
+    """
+    samtools index ${sorted}
     """
 }
 
@@ -88,4 +106,5 @@ workflow {
     trimmed_reads = TRIM_GALORE(raw_reads)
     mapped = BWA_ALIGN(trimmed_reads, bwa_index)
     sorted = SAMTOOLS_SORTING(mapped)
+    SAMTOOLS_INDEXING(sorted)
 }
