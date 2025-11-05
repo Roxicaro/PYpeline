@@ -15,5 +15,4 @@ RUN micromamba create -y -n pypeline -f /tmp/base_env.yaml && \
 
 SHELL ["micromamba", "run", "-n", "pypeline", "/bin/bash", "-lc"]
 
-ENTRYPOINT ["micromamba", "run", "-n", "pypeline", "nextflow"]
-CMD [""]
+ENTRYPOINT ["micromamba", "run", "-n", "pypeline", "bash"]

@@ -125,11 +125,11 @@ process GATK_MUTECT2 {
 workflow {
     raw_reads = Channel.fromFilePairs(params.reads)
     //bwa_index = file( 'data/references/hg38.fa.{,amb,ann,bwt,pac,sa,fai}' )
-    bwa_index = file( 's3://data/references/hg38.fa.{,amb,ann,bwt,pac,sa,fai}' )
+    bwa_index = file( 's3://pypeline-nextflow-bucket/data/references/hg38.fa.{,amb,ann,bwt,pac,sa,fai}' )
     //fasta = file('data/references/hg38.fa')
-    fasta = file('s3://data/references/hg38.fa')
+    fasta = file('s3://pypeline-nextflow-bucket/data/references/hg38.fa')
     //dict = file('data/references/hg38.dict')
-    dict = file('s3://data/references/hg38.dict')
+    dict = file('s3://pypeline-nextflow-bucket/data/references/hg38.dict')
 
     FASTQC(raw_reads)
     trimmed_reads = TRIM_GALORE(raw_reads)
