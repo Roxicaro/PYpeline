@@ -10,9 +10,10 @@ RUN mkdir -p /home/mamba /pipeline \
 COPY /docker/base_env.yaml /tmp/base_env.yaml
 
 RUN micromamba create -y -n pypeline -f /tmp/base_env.yaml && \
-    micromamba install -y -n pypeline -c bioconda -c conda-forge nextflow && \
+    micromamba install -y -n pypeline -c bioconda -c conda-forge nextflow awscli && \
     micromamba clean --all --yes
 
-SHELL ["micromamba", "run", "-n", "pypeline", "/bin/bash", "-lc"]
+SHELL ["micromamba", "run", "-n", "pypeline", "--", "bash", "-c"]
 
-ENTRYPOINT ["micromamba", "run", "-n", "pypeline", "bash"]
+ENTRYPOINT ["micromamba", "run", "-n", "pypeline"]
+CMD ["bash"]
