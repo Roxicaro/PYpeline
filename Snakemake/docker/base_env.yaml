@@ -5,5 +5,11 @@ channels:
   - defaults
 dependencies:
   - python=3.12
-  - snakemake-minimal
-  - micromamba
+  - bwa
+  - samtools
+  - fastqc
+  - openjdk=11
+  - gatk4
+  - multiqc
+  - cutadapt
+  - trim-galore

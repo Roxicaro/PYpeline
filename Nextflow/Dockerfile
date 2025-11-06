@@ -1,6 +1,5 @@
 FROM mambaorg/micromamba:1.5.8
 
-# Set HOME to a writable directory for Nextflow
 ENV HOME=/home/mamba
 USER root
 
