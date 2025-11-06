@@ -1,6 +1,25 @@
 # PYpeline
 **A lightweight and modular NGS pipeline from FASTQ → BAM → VCF**, designed for small projects and rapid iteration.\
-Available in both `Snakemake` and `Nextflow`.
+Fully containerized and ready for AWS Batch.
+
+---
+
+## Key Features
+
+### Same pipeline implemented in two workflow languages
+- **Snakemake version** (ideal for development, rule-based execution locally)
+- **Nextflow version** (designed for cloud execution and scalability)
+
+---
+
+### Fully reproducible with **Docker**
+| Workflow | Docker image | Auto-pulled by pipeline |
+|----------|-------------|--------------------------|
+| Snakemake | `roxicaro/pypeline-snakemake:latest` | ✓ Yes |
+| Nextflow  | `roxicaro/pypeline-nextflow:latest`     | ✓ Yes |
+
+
+---
 
 This pipeline automates the essential steps of variant analysis, including:
 - Trimming (TrimGalore)
