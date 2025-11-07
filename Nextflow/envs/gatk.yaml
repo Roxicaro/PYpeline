@@ -4,5 +4,5 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - openjdk=11
-  - gatk4
+  - openjdk = 17
+  - gatk4   = 4.4.0.0 

@@ -5,13 +5,4 @@ channels:
   - defaults
 
 dependencies:
-  - python=3.12
-  - bwa
-  - samtools
-  - fastqc
-  - openjdk=11
-  - gatk4
-  - multiqc
-  - cutadapt
-  - trim-galore
-  - perl
+  - python      = 3.10
