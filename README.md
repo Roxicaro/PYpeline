@@ -6,7 +6,7 @@ Fully containerized and ready for AWS Batch.
 
 ## Key Features
 
-### Same pipeline implemented in two workflow languages
+### Implemented in two workflow languages
 - **Snakemake version** (ideal for development, rule-based execution locally)
 - **Nextflow version** (designed for cloud execution and scalability)
 
@@ -21,14 +21,14 @@ Fully containerized and ready for AWS Batch.
 
 ---
 
-This pipeline automates the essential steps of variant analysis, including:
+This pipeline automates the following steps:
 - Trimming (TrimGalore)
 - Quality control (FastQC + MultiQC)
 - Read alignment (BWA MEM)
 - Sorting and indexing (Samtools)
 - Variant calling (Mutect2)
 
-It supports **Single-End (IonTorrent, AmpliSeq)** (_Snakemake only_) and **Paired-End (Illumina)** FASTQ files automatically.
+It supports **Single-End (IonTorrent, AmpliSeq)** (_Snakemake only_) and **Paired-End (Illumina)** FASTQ files.
 
 ## Quickstart (TL;DR)
 
