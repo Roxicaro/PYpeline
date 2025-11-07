@@ -3,6 +3,14 @@ channels:
   - conda-forge
   - bioconda
   - defaults
-
 dependencies:
   - python      = 3.10
+  - bwa         = 0.7.17
+  - samtools    = 1.17
+  - fastqc      = 0.12.1
+  - openjdk     = 17
+  - gatk4       = 4.4.0.0 
+  - multiqc     = 1.22
+  - cutadapt    = 4.6
+  - trim-galore = 0.6.10
+  - perl        = 5.32

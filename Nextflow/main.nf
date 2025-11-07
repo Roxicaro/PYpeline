@@ -124,7 +124,6 @@ process GATK_MUTECT2 {
 }
 workflow {
     raw_reads = Channel.fromFilePairs(params.reads)
-    //bwa_index = file( 'data/references/hg38.fa.{,amb,ann,bwt,pac,sa,fai}' )
     bwa_index = file(params.bwa_index)
     fasta = file(params.reference)
     dict = file(params.dict)
