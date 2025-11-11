@@ -5,6 +5,7 @@ process SAMTOOLS_INDEXING {
     publishDir "${params.outdir}/bam", mode: 'copy'
 
     conda "envs/bwa.yaml"
+    container "community.wave.seqera.io/library/samtools:1.22.1--eccb42ff8fb55509"
 
     input:
     tuple val(sample_id), path(sorted)

@@ -5,6 +5,7 @@ process BWA_ALIGN {
     publishDir "${params.outdir}/aligned_unsorted", mode: 'copy'
 
     conda "envs/bwa.yaml"
+    container "community.wave.seqera.io/library/bwa_samtools:19bc75ebb449c7ff"
 
     input:
     tuple val(sample_id), path(read1), path(read2)
