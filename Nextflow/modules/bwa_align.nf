@@ -1,0 +1,22 @@
+#!/usr/bin/env nextflow
+
+process BWA_ALIGN {
+    tag "$sample_id"
+    publishDir "${params.outdir}/aligned_unsorted", mode: 'copy'
+
+    conda "envs/bwa.yaml"
+
+    input:
+    tuple val(sample_id), path(read1), path(read2)
+    path bwa_index
+
+    output:
+    tuple val(sample_id), path("${sample_id}_unsorted.bam")
+
+    script:
+    def idxbase = bwa_index[0].baseName // sets the index base name
+    def param = "@RG\\tID:${sample_id}\\tSM:${sample_id}" // read group parameter
+    """
+    bwa mem -R '${param}' -t ${task.cpus} ${idxbase} ${read1} ${read2} | samtools view -b - > "${sample_id}_unsorted.bam"
+    """
+}
