@@ -4,7 +4,9 @@ process FASTQC {
     tag "$sample_id"
     publishDir "${params.outdir}/fastqc", mode: 'copy'
     conda "envs/fastqc.yaml"
-    container "community.wave.seqera.io/library/fastqc:0.12.1--af7a5314d5015c29"
+    container "community.wave.seqera.io/library/fastqc_awscli:6c9886bd361f561a"
+    //awscli    = 2.31.33   (conda-forge)
+    //fastqc    = 0.12.1    (bioconda)
 
     input:
     tuple val(sample_id), path(reads)

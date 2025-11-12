@@ -5,7 +5,10 @@ process BWA_ALIGN {
     publishDir "${params.outdir}/aligned_unsorted", mode: 'copy'
 
     conda "envs/bwa.yaml"
-    container "community.wave.seqera.io/library/bwa_samtools:19bc75ebb449c7ff"
+    container "community.wave.seqera.io/library/bwa_samtools_awscli:8ec39ef35cae626f"
+    //awscli	= 2.31.33   (conda-forge)
+    //bwa	    = 0.7.19    (bioconda)
+    //samtools  = 1.22.1    (bioconda)
 
     input:
     tuple val(sample_id), path(read1), path(read2)

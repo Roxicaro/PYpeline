@@ -5,7 +5,9 @@ process TRIM_GALORE {
     publishDir "${params.outdir}/trimmed", mode: 'copy'
 
     conda "envs/trim_galore.yaml"
-    container "community.wave.seqera.io/library/trim-galore:0.6.10--1bf8ca4e1967cd18"
+    container "community.wave.seqera.io/library/trim-galore_awscli:0051297f49a97842"
+    //awscli        = 2.31.33   (conda-forge)
+    //trim-galore   = 0.6.10    (bioconda)
 
     input:
     tuple val(sample_id), path(reads)
