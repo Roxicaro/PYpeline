@@ -15,10 +15,10 @@ workflow {
     fasta = file(params.reference)
     dict = file(params.dict)
 
-    FASTQC(raw_reads)
-    trimmed_reads = TRIM_GALORE(raw_reads)
-    mapped = BWA_ALIGN(trimmed_reads, bwa_index)
-    sorted = SAMTOOLS_SORTING(mapped)
-    indexed = SAMTOOLS_INDEXING(sorted)
-    GATK_MUTECT2 (sorted, indexed, bwa_index, fasta, dict)
+    FASTQC(raw_reads)                                       // Quality check of raw (untrimmed) FASTQ files
+    trimmed_reads = TRIM_GALORE(raw_reads)                  // .fastq - Trimmed FASTQ files
+    mapped = BWA_ALIGN(trimmed_reads, bwa_index)            // .bam - Unsorted aligned BAM files
+    sorted = SAMTOOLS_SORTING(mapped)                       // .bam - Sorted BAM files
+    indexed = SAMTOOLS_INDEXING(sorted)                     // .bai - BAI files (indexed BAM)
+    GATK_MUTECT2 (sorted, indexed, bwa_index, fasta, dict)  // .raw.vcf.gz - Raw VCF files with variant calls
 }
