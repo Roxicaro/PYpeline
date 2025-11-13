@@ -1,6 +1,6 @@
 # PYpeline
 **A lightweight and modular NGS pipeline from FASTQ → BAM → VCF**, designed for small projects and rapid iteration.\
-Fully containerized and ready for AWS Batch.
+Ready for AWS Batch.
 
 ---
 
@@ -9,15 +9,6 @@ Fully containerized and ready for AWS Batch.
 ### Implemented in two workflow languages
 - **Snakemake version** (ideal for development, rule-based execution locally)
 - **Nextflow version** (designed for cloud execution and scalability)
-
----
-
-### Fully reproducible with **Docker**
-| Workflow | Docker image | Auto-pulled by pipeline |
-|----------|-------------|--------------------------|
-| Snakemake | `roxicaro/pypeline-snakemake:latest` | ✓ Yes |
-| Nextflow  | `roxicaro/pypeline-nextflow:latest`     | ✓ Yes |
-
 
 ---
 
@@ -37,7 +28,7 @@ It supports **Single-End (IonTorrent, AmpliSeq)** (_Snakemake only_) and **Paire
 git clone https://github.com/Roxicaro/Pypeline.git
 cd Pypeline
 ```
-- Install requirements: Docker, Snakemake / Nextlow
+- Install requirements: Snakemake / Nextlow (Nextflow can be used on any POSIX-compatible system (Linux, macOS, etc), and on Windows through WSL.)
 - Prepare `data/` directory (FASTQs + reference)
 - Edit `workflow/config.yaml` (Snakemake) or `nexflow.config` (Nexflow)
 - Run
@@ -64,17 +55,17 @@ results/              # Output files will be written here
 
 ### Nextflow
 ```markdown
-data/
-├── fastq_files/      # FASTQ input files
-├── bed/              # BED files for target regions (optional)
-└── references/       # Reference genome files (FASTA + indexe files for BWA MEM and Mutect2)
-
 root/
 ├── envs/             # Environment .yaml files
 ├── main.nf           # Main workflow file              
 └── nextflow.config   # Configuration file where the user sets pipeline parameters and file paths
 
-results/              # Output files will be written here
+root/data/
+├── fastq_files/      # FASTQ input files
+├── bed/              # BED files for target regions (optional)
+└── references/       # Reference genome files (FASTA + indexe files for BWA MEM and Mutect2)
+
+root/results/         # Output files will be written here
 ```
 
 
@@ -98,11 +89,15 @@ docker run -it --rm \
 ### Using Docker with Nextflow:
 **Local:**
 ```markdown
+nextflow run main.nf
+```
+**Docker:**
+```markdown
 nextflow run main.nf -profile docker
 ```
 **AWS Batch:**
 ```markdown
-nextflow run main.nf -profile aws_batch -bucket-dir s3://<s3-bucket-name>/
+nextflow run main.nf -profile aws_batch
 ```
 
 ### Generate a DAG diagram showing the workflow (Snakemake):
@@ -127,8 +122,8 @@ results/
 ```
 
 ## Requirements
-- [Docker](https://www.docker.com/get-started/)
-- [Snakemake](https://snakemake.github.io/) / [Nextflow](https://github.com/nextflow-io/nextflow)
+- [Snakemake](https://snakemake.github.io/) / [Nextflow](https://github.com/nextflow-io/nextflow) \
+Note: Nextflow can be used on any POSIX-compatible system (Linux, macOS, etc), and on Windows through WSL.
 
 ## Example Workflow DAG (Snakemake)
 
