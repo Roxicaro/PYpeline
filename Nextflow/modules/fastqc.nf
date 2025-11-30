@@ -9,7 +9,7 @@ process FASTQC {
     //fastqc    = 0.12.1    (bioconda)
 
     input:
-    tuple val(sample_id), path(reads)
+    tuple val(sample_id), path(read1), path(read2)
 
     output:
     path "*.html"
@@ -17,6 +17,6 @@ process FASTQC {
 
     script:
     """
-    fastqc -t ${task.cpus} ${reads}
+    fastqc -t ${task.cpus} ${read1} ${read2}
     """
 }

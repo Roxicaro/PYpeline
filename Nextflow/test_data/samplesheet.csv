@@ -1,0 +1,2 @@
+sample_id,read1,read2
+test_sample,test_data/fastq_files/read_1.fastq,test_data/fastq_files/read_2.fastq

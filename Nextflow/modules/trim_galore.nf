@@ -10,10 +10,10 @@ process TRIM_GALORE {
     //trim-galore   = 0.6.10    (bioconda)
 
     input:
-    tuple val(sample_id), path(reads)
+    tuple val(sample_id), path(read1), path(read2)
 
     output:
-    tuple val(sample_id), path("${sample_id}_1_val_1.fq"), path("${sample_id}_2_val_2.fq")
+    tuple val(sample_id), path("*_1_val_1.fq"), path("*_2_val_2.fq")
 
     script:
     """
@@ -21,6 +21,6 @@ process TRIM_GALORE {
         --cores ${task.cpus} \
         --fastqc \
         --output_dir ./ \
-        ${reads.join(" ")}
+        ${read1} ${read2}
     """
 }
