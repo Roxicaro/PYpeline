@@ -1,7 +1,7 @@
 Snakemake/data/
 Snakemake/results/
 Snakemake/workflow/.snakemake/
-Nextflow/data_/
+Nextflow/data/
 Nextflow/.nextflow/
 Nextflow/work/
 Nextflow/results
