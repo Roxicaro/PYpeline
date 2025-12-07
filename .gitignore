@@ -5,3 +5,6 @@ Nextflow/data/
 Nextflow/.nextflow/
 Nextflow/work/
 Nextflow/results
+Nextflow/docker/
+Nextflow/.dockerignore
+Nextflow/Dockerfile
