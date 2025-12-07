@@ -10,7 +10,7 @@ include { GATK_MUTECT2 } from './modules/gatk_mutect2.nf'
 
 
 workflow {
-    raw_reads = Channel.fromPath(params.samplesheet)
+    raw_reads = channel.fromPath(params.samplesheet)
     .splitCsv(header:true)
     .map { row -> tuple(row.sample_id, file(row.read1), file(row.read2)) }  //Get sample_id, read1 and read2 from samplesheet    
     bwa_index = file(params.bwa_index)
