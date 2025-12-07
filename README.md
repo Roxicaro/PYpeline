@@ -17,7 +17,8 @@ This pipeline automates the following steps:
 - Quality control (FastQC + MultiQC)
 - Read alignment (BWA MEM)
 - Sorting and indexing (Samtools)
-- Variant calling (Mutect2)
+- Variant calling (GATK Mutect2 - Tumor-Only Mode)
+  - This pipeline performs variant calling exclusively in **tumor-only mode**. Matched normal samples are not supported in the current version.
 
 It supports **Single-End (IonTorrent, AmpliSeq)** (_Snakemake only_) and **Paired-End (Illumina)** FASTQ files.
 
@@ -84,6 +85,8 @@ This file **must be located at**: `Nextflow/data/samplesheet.csv`
 |----------|------|-------|
 | Unique sample name | Path to R1 FASTQ | Path to R2 FASTQ |
 
+> **Note:** Mutect2 runs in **tumor-only mode**.  
+> The pipeline does **not** accept or require normal/control samples.
 ---
 
 ### Example Sample Sheet
