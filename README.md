@@ -31,6 +31,7 @@ cd Pypeline
 - Install requirements: Snakemake / Nextlow (Nextflow can be used on any POSIX-compatible system (Linux, macOS, etc), and on Windows through WSL.)
 - Prepare `data/` directory (FASTQs + reference)
 - Edit `workflow/config.yaml` (Snakemake) or `nexflow.config` (Nexflow)
+- Add Sample_ID and fastq file paths to data/samplesheet.csv (Nextflow)
 - Run
 
 
@@ -56,25 +57,47 @@ results/              # Output files will be written here
 ### Nextflow
 ```markdown
 Nextflow/
-├── envs/             # Environment .yaml files
-├── main.nf           # Main workflow file              
-├── nextflow.config   # Configuration file where the user sets pipeline parameters and file paths
-├── results/          # Output files will be written here
-├── modules/          # Code for the different workflow modules
+├── envs/                 # Environment .yaml files
+├── main.nf               # Main workflow file              
+├── nextflow.config       # Configuration file where the user sets pipeline parameters and file paths
+├── results/              # Output files will be written here
+├── modules/              # Code for the different workflow modules
 └── data/
-    ├── fastq_files/  # FASTQ input files
-    ├── bed/          # BED files for target regions (optional)
-    └── references/   # Reference genome files (FASTA + indexe files for BWA MEM and Mutect2)
+    ├── fastq_files/      # FASTQ input files
+    ├── samplesheet.csv   # Sample list and file paths
+    ├── bed/              # BED files for target regions (optional)
+    └── references/       # Reference genome files (FASTA + indexe files for BWA MEM and Mutect2)
 ```
 
 - **FASTQ files:** Input sequencing reads.  
 - **BED files:** Target regions for variant calling (optional).  
 - **References:** Reference genome files including any required index files for `bwa mem` and `Mutect2` _(.fa / .fai / .dict / .amb / .ann / .bwt / .pac / .sa)_.
 
-## Running the pipeline
-First, edit the `config.yaml` (Snakemake) or `nextflow.config` (Nextflow) file to decide pipeline parameters and to **inform FASTQ file paths**.
+## Input Sample Sheet (Required for Nextflow)
 
-### Using Docker with Snakemake (local):
+To run the Nexflow pipeline, you must provide a **samplesheet CSV** listing the input FASTQ files.\
+This file **must be located at**: `Nextflow/data/samplesheet.csv`
+
+### CSV Format
+
+| sample_id | read1 | read2 |
+|----------|------|-------|
+| Unique sample name | Path to R1 FASTQ | Path to R2 FASTQ |
+
+---
+
+### Example Sample Sheet
+
+```csv
+sample_id,read1,read2
+SRR35855706,data/fastq_files/SRR35855706_1.fastq,data/fastq_files/SRR35855706_2.fastq
+```
+
+## Running the pipeline
+First, edit `config.yaml` (Snakemake) or `data/samplesheet.csv` (Nextflow) to **inform FASTQ file paths**.\
+To run using AWS Batch (Nextflow) edit `nextflow.conf` to include the paths to the reference and index files in an S3 bucket.
+
+### Running with Snakemake (local w/ Docker):
 ```markdown
 docker run -it --rm \
   -v $PWD:/pipeline \
@@ -84,12 +107,12 @@ docker run -it --rm \
 ```
 `--cores` specifies the number of cores to be used.
 
-### Using Docker with Nextflow:
-**Local:**
+### Running with Nextflow:
+**Local (Not recommended. Requires all tools to be locally installed):**
 ```markdown
 nextflow run main.nf
 ```
-**Docker:**
+**Docker (Recommended):**
 ```markdown
 nextflow run main.nf -profile docker
 ```
