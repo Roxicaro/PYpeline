@@ -55,19 +55,17 @@ results/              # Output files will be written here
 
 ### Nextflow
 ```markdown
-root/
+Nextflow/
 ├── envs/             # Environment .yaml files
 ├── main.nf           # Main workflow file              
-└── nextflow.config   # Configuration file where the user sets pipeline parameters and file paths
-
-root/data/
-├── fastq_files/      # FASTQ input files
-├── bed/              # BED files for target regions (optional)
-└── references/       # Reference genome files (FASTA + indexe files for BWA MEM and Mutect2)
-
-root/results/         # Output files will be written here
+├── nextflow.config   # Configuration file where the user sets pipeline parameters and file paths
+├── results/          # Output files will be written here
+├── modules/          # Code for the different workflow modules
+└── data/
+    ├── fastq_files/  # FASTQ input files
+    ├── bed/          # BED files for target regions (optional)
+    └── references/   # Reference genome files (FASTA + indexe files for BWA MEM and Mutect2)
 ```
-
 
 - **FASTQ files:** Input sequencing reads.  
 - **BED files:** Target regions for variant calling (optional).  
